@@ -50,7 +50,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                    triggeringGeofence?.forEach {geofence ->
                         CoroutineScope(Dispatchers.IO).launch {
                             val reminder =  reminderDao.getReminderById(geofence.requestId.toInt())
-                            notificationUtil.createNotification( reminder.id , reminder.title, reminder.description)
+                            notificationUtil.createNotification(reminder)
                         }
                     }
                     myLog("Receiver Enter Event : ${triggeringGeofence.toString()}")

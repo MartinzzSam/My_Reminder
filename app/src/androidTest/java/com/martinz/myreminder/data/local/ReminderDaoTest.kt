@@ -1,7 +1,8 @@
 package com.martinz.myreminder.data.local
 
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -45,7 +46,7 @@ class ReminderDaoTest {
 
     @Test
     fun insertReminder() = runBlocking {
-        val reminder = Reminder(id = 1 , title = "Test 1" , description = "Desc 1" , latLong = LatLng(123.123 , 123.123))
+        val reminder = Reminder(id = 1 , title = "Test 1" , description = "Desc 1" , latLong = LatLng(123.123 , 123.123) , 200f)
         dao.addReminder(reminder)
         val reminders = dao.getAllReminders().first()
         assertTrue(reminders.contains(reminder))
@@ -53,7 +54,7 @@ class ReminderDaoTest {
 
     @Test
     fun deleteReminder() = runBlocking {
-        val reminder = Reminder(id = 1 , title = "Test 1" , description = "Desc 1" , latLong = LatLng(123.123 , 123.123))
+        val reminder = Reminder(id = 1 , title = "Test 1" , description = "Desc 1" , latLong = LatLng(123.123 , 123.123), 200f)
         dao.addReminder(reminder)
         dao.deleteReminder(reminder)
         val allReminders = dao.getAllReminders().first()
@@ -63,7 +64,7 @@ class ReminderDaoTest {
 
     @Test
     fun getReminderById() = runBlocking {
-        val reminder = Reminder(id = 1 , title = "Test 1" , description = "Desc 1" , latLong = LatLng(123.123 , 123.123))
+        val reminder = Reminder(id = 1 , title = "Test 1" , description = "Desc 1" , latLong = LatLng(123.123 , 123.123), 200f)
         dao.addReminder(reminder)
         val result = dao.getReminderById(reminder.id)
         assertTrue(result == reminder)

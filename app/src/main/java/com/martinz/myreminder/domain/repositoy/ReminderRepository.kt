@@ -25,9 +25,9 @@ interface ReminderRepository {
     suspend fun signInWithEmailAndPassword(email: String , password: String) : Flow<Response<String>>
 
 
-    suspend fun saveReminder(reminder: Reminder) : Flow<Response<String>>
+    suspend fun addReminder(reminder: Reminder)
 
-    suspend fun deleteReminder(reminder: Reminder) : Flow<Response<String>>
+    suspend fun deleteReminder(reminder: Reminder)
 
     fun getAllReminders() : Flow<List<Reminder>>
 

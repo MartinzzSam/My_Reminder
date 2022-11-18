@@ -2,7 +2,6 @@ package com.martinz.myreminder.domain.use_cases.validation
 
 
 import android.util.Patterns
-import androidx.compose.ui.graphics.Color
 import com.martinz.myreminder.core.util.ValidationResult
 
 
@@ -14,7 +13,6 @@ class ValidateEmail {
             return ValidationResult(
                 successful = false,
                 errorMessage = "The email can't be blank",
-                errorColor = Color.Red
             )
         }
         // IDK really why this not working with testing
@@ -23,7 +21,6 @@ class ValidateEmail {
             return ValidationResult(
                 successful = false,
                 errorMessage = "That's not a valid email",
-                errorColor = Color.Red,
             )
         }
         return ValidationResult(

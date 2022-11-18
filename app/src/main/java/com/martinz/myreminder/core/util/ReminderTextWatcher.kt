@@ -1,9 +1,9 @@
-package com.martinz.myreminder.presentation.register_screen
+package com.martinz.myreminder.core.util
 
 import android.text.Editable
 import android.text.TextWatcher
 
-class RegisterTextWatcher(val onTextChange : (String) -> Unit) : TextWatcher {
+class ReminderTextWatcher(val onTextChange : (String) -> Unit) : TextWatcher {
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
     }

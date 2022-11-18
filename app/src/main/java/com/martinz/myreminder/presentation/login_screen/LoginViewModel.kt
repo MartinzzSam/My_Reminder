@@ -1,19 +1,19 @@
 package com.martinz.myreminder.presentation.login_screen
 
-import androidx.compose.runtime.mutableStateOf
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinz.myreminder.core.myLog
 import com.martinz.myreminder.core.util.Response
 import com.martinz.myreminder.core.util.UiEvent
 import com.martinz.myreminder.domain.repositoy.ReminderRepository
-import com.martinz.myreminder.domain.use_cases.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -25,11 +25,12 @@ class LoginViewModel @Inject constructor(
 
 
 
-    val emailState = mutableStateOf("")
 
-    val passwordState = mutableStateOf("")
+    private val _state = MutableStateFlow<LoginState>(LoginState())
+    val state = _state.asStateFlow()
 
-    val isLoading = mutableStateOf(false)
+
+
 
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent : Flow<UiEvent> = _uiEvent.consumeAsFlow()
@@ -41,20 +42,34 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event : LoginEvent) {
         when(event) {
 
+
+            is LoginEvent.EmailChanged -> {
+                _state.value = state.value.copy(
+                    emailState = event.email
+                )
+
+            }
+            is LoginEvent.PasswordChanged -> {
+                _state.value = state.value.copy(
+                    passwordState = event.password
+                )
+
+            }
+
             is LoginEvent.SignInWithGoogle -> {
-                isLoading.value = true
                 viewModelScope.launch(Dispatchers.IO) {
+                    _state.emit(state.value.copy(isLoading = true))
                     repository.signWithGoogle(event.account).collect { response ->
                         when(response) {
 
                             is Response.Success -> {
-                                isLoading.value = false
+                                _state.emit(state.value.copy(isLoading = false))
                                 myLog(response.data)
                                 _uiEvent.send(UiEvent.Navigate(LoginFragmentDirections.actionLoginFragmentToMainFragment()))
                             }
 
                             is Response.Error -> {
-                                isLoading.value = true
+                                _state.emit(state.value.copy(isLoading = false))
                                 myLog(response.message)
                             }
 
@@ -65,18 +80,18 @@ class LoginViewModel @Inject constructor(
             }
 
             is LoginEvent.SignInWithEmailAndPassword -> {
-                isLoading.value = true
                 viewModelScope.launch(Dispatchers.IO) {
-                    repository.signInWithEmailAndPassword(emailState.value , passwordState.value).collect { response ->
+                    _state.emit(state.value.copy(isLoading = true))
+                    repository.signInWithEmailAndPassword(state.value.emailState , state.value.passwordState).collect { response ->
                         when(response) {
                          is Response.Success -> {
-                             isLoading.value = false
+                             _state.emit(state.value.copy(isLoading = false))
                              _uiEvent.send(UiEvent.Navigate(LoginFragmentDirections.actionLoginFragmentToMainFragment()))
                          }
 
                          is Response.Error -> {
-                             isLoading.value = false
-                             _uiEvent.send(UiEvent.ShowSnackBar(response.message))
+                             _state.emit(state.value.copy(isLoading = false))
+                             _uiEvent.send(UiEvent.ShowToast(response.message))
                          }
                         }
                     }

@@ -114,44 +114,10 @@ class ReminderRepositoryImpl(
     }
 
 
-    override suspend fun saveReminder(reminder: Reminder): Flow<Response<String>> = flow {
-        try {
-            val geoFence = mGeofence.addGeofence(reminder).catch {
-                myLog("FLow catch : $this")
-            }.first()
-            when (geoFence) {
-                is Response.Success -> {
+    override suspend fun addReminder(reminder: Reminder) = reminderDao.addReminder(reminder)
 
-                    reminderDao.addReminder(reminder)
-                    emit(Response.Success("Added Successfully"))
+    override suspend fun deleteReminder(reminder: Reminder)  = reminderDao.deleteReminder(reminder)
 
-                }
-
-                is Response.Error -> {
-                    emit(Response.Error(geoFence.message))
-
-                }
-            }
-
-
-        } catch (e: Exception) {
-            emit(Response.Error(e.message.toString()))
-        }
-    }
-
-    override suspend fun deleteReminder(reminder: Reminder): Flow<Response<String>> =
-        mGeofence.deleteGeofence(reminder.id.toString()).map { response ->
-            when (response) {
-                is Response.Success -> {
-                    reminderDao.deleteReminder(reminder)
-                    Response.Success(response.data)
-                }
-
-                is Response.Error -> {
-                    Response.Error(response.message)
-                }
-            }
-        }
 
 
     override fun getAllReminders(): Flow<List<Reminder>> = reminderDao.getAllReminders()

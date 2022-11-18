@@ -1,7 +1,5 @@
 package com.martinz.myreminder.presentation.register_screen
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinz.myreminder.core.myLog
@@ -77,7 +75,7 @@ class RegisterViewModel @Inject constructor(
 
         if(hasError) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackBar("Validation Error"))
+                _uiEvent.send(UiEvent.ShowToast("Validation Error"))
                 _state.emit(
                     RegistrationFormState(
                         emailError = emailResult.errorMessage,
@@ -86,9 +84,6 @@ class RegisterViewModel @Inject constructor(
                         email = state.value.email,
                         password = state.value.password,
                         repeatedPassword = state.value.repeatedPassword,
-                        emailErrorColor = emailResult.errorColor.toArgb(),
-                        passwordErrorColor = passwordResult.errorColor.toArgb(),
-                        repeatedPasswordErrorColor = repeatedPasswordResult.errorColor.toArgb()
                     ))
             }
             return
@@ -102,16 +97,13 @@ class RegisterViewModel @Inject constructor(
                                 email = state.value.email,
                                 password = state.value.password,
                                 repeatedPassword = state.value.repeatedPassword,
-                                emailErrorColor = Color.Transparent.toArgb(),
-                                passwordErrorColor = Color.Transparent.toArgb(),
-                                repeatedPasswordErrorColor = Color.Transparent.toArgb()
                             )
                         )
                         _uiEvent.send(UiEvent.Navigate(RegisterFragmentDirections.actionRegisterFragmentToMainFragment()))
                     }
 
                     is Response.Error -> {
-                        _uiEvent.send(UiEvent.ShowSnackBar(response.message))
+                        _uiEvent.send(UiEvent.ShowToast(response.message))
                     }
                 }
             }

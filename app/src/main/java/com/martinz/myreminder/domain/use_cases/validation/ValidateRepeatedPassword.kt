@@ -2,7 +2,7 @@ package com.martinz.myreminder.domain.use_cases.validation
 
 
 
-import androidx.compose.ui.graphics.Color
+
 import com.martinz.myreminder.core.util.ValidationResult
 
 
@@ -12,7 +12,6 @@ class ValidateRepeatedPassword {
             return ValidationResult(
                 successful = false,
                 errorMessage = "The passwords don't match",
-                errorColor = Color.Red
             )
         }
         return ValidationResult(

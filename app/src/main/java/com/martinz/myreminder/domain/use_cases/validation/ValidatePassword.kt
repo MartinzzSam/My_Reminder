@@ -1,7 +1,6 @@
 package com.martinz.myreminder.domain.use_cases.validation
 
 
-import androidx.compose.ui.graphics.Color
 import com.martinz.myreminder.core.util.ValidationResult
 
 
@@ -11,7 +10,6 @@ class ValidatePassword {
             return ValidationResult(
                 successful = false,
                 errorMessage = "The password needs to consist of at least 8 characters",
-                errorColor = Color.Red
             )
         }
         val containsLettersAndDigits = password.any { it.isDigit() } &&
@@ -20,7 +18,6 @@ class ValidatePassword {
             return ValidationResult(
                 successful = false,
                 errorMessage = "The password needs to contain at least one letter and digit",
-                errorColor = Color.Red
             )
         }
 
@@ -30,7 +27,6 @@ class ValidatePassword {
                 return ValidationResult(
                     successful = false,
                     errorMessage = "The password needs to contain english letters and numbers only",
-                    errorColor = Color.Red
                 )
             }
         }

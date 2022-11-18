@@ -10,8 +10,11 @@ import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.google.gson.Gson
 import com.martinz.myreminder.R
+import com.martinz.myreminder.domain.model.Reminder
 import com.martinz.myreminder.presentation.MainActivity
+import com.martinz.myreminder.presentation.ReminderDetailActivity
 
 
 class NotificationUtilImpl(
@@ -39,36 +42,29 @@ class NotificationUtilImpl(
         }
     }
 
-    override fun createNotification(notificationId: Int , title: String, description: String) {
+    override fun createNotification(reminder : Reminder) {
 
-        val intent = Intent(context , MainActivity::class.java)
 
-    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        PendingIntent.getActivity(
+        val detailIntent = Intent(context, ReminderDetailActivity::class.java)
+        val json = Gson().toJson(reminder)
+        detailIntent.putExtra("reminder" , json)
+
+
+    val pendingIntent = PendingIntent.getActivity(
             context,
             REQUEST_CODE,
-            intent,
-            PendingIntent.FLAG_MUTABLE
+            detailIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
-    } else {
-
-        PendingIntent.getActivity(
-            context,
-            REQUEST_CODE,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-    }
-
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-        .setSmallIcon(R.drawable.ic_launcher_background)
-        .setContentTitle(title)
-        .setContentText(description)
+        .setSmallIcon(R.drawable.ic_baseline_location_on_24)
+        .setContentTitle(reminder.title)
+        .setContentText(reminder.description)
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
-    notificationManager.notify(notificationId, builder.build())
+    notificationManager.notify(reminder.id, builder.build())
 
     }
 
